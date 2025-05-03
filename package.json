@@ -1,0 +1,22 @@
+{
+  "name": "filemanager",
+  "version": "1.0.0",
+  "author": "Abdurakhmon Kodirov",
+  "description": "This repository is the part of nodejs-assignments https://github.com/AlreadyBored/nodejs-assignments",
+  "engines": {
+    "node": ">=22.14"
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "node index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/kodirov257/filemanager.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kodirov257/filemanager/issues"
+  },
+  "homepage": "https://github.com/kodirov257/filemanager#readme"
+}
