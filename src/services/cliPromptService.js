@@ -1,7 +1,7 @@
 import process from 'node:process';
 
 const args = process.argv.slice(2);
-const basePath = args[0];
+const baseWorkingPath = args[0];
 
 const resolveInput = (chunk) => {
     const chunkStringified = chunk.toString().trim();
