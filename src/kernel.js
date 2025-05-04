@@ -6,6 +6,7 @@ import path from 'path';
 
 const username = helpers.parseUsername(cliParserService.parseCliArguments());
 process.stdout.write(`Welcome to the File Manager, ${username}!\n`);
+process.stdout.write('Type one of operations. To quit type ".exit" or press Ctrl+C\n');
 
 const run = async (args) => {
     const child = spawn('node', [path.join(import.meta.dirname, '/services/cliPromptService.js'), ...args], {
@@ -16,7 +17,6 @@ const run = async (args) => {
     child.stdout.pipe(process.stdout);
 
     process.stdin.setEncoding('utf8');
-    process.stdout.write('Type ".exit" or press Ctrl+C to quit\n');
 
     process.on('SIGINT', () => {
         child.kill();
@@ -27,6 +27,14 @@ const run = async (args) => {
         process.exit(0);
     });
 
+    child.on('error', (err) => {
+        if (err) {
+            console.log(`Error occured: ${err}`);
+        }
+
+        process.stdin.pipe(child.stdin);
+        child.stdout.pipe(process.stdout);        
+    })
 };
 
 const kernel = {
