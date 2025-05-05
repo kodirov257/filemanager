@@ -7,7 +7,7 @@ const baseWorkingPath = args[0];
 let currentPath = baseWorkingPath;
 process.chdir(currentPath);
 
-const commandNames = ['list', 'up', 'cd', 'ls', 'cat'];
+const commandNames = ['list', 'up', 'cd', 'ls', 'cat', 'mkdir'];
 
 const commandsDisplay = `
 Available commands:
@@ -17,7 +17,8 @@ Available commands:
   cd [path_to_directory]                Go to dedicated folder from current directory
   ls                                    Print in console list of all files and folders in current directory
  Basic operations with files
-  cat path_to_file                      Read file and print it's content in console
+  cat [path_to_file]                    Read file and print it's content in console
+  mkdir [new_directory_name]            Create new directory in current working directory
 `;
 let display = `
 Usage:
@@ -62,10 +63,20 @@ const resolveInput = async (chunk) => {
                 break;
             case 'cat':
                 if (!args[1]) {
-                    result = 'Please provide path to directory';
+                    result = 'Please provide path to file';
                     break;
                 }
                 result = await fileStreamService.readFileContent(args[1]);
+                break;
+            case 'mkdir':
+                if (!args[1]) {
+                    result = 'Please provide name of directory';
+                    break;
+                }
+
+                const folderPath = await fileStreamService.makeDirectory(args[1]);
+                result = `Directory ${folderPath} created successfully.`;
+                break;
         }
     } catch (err) {
         result = err.message;

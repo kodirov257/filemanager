@@ -16,7 +16,20 @@ const readFileContent = async (sourcePath) => {
     }
 };
 
+const makeDirectory = async (name) => {
+    const sourcePath = path.join(process.cwd(), name);
+
+    try {
+        await fs.mkdir(sourcePath);
+
+        return sourcePath;
+    } catch (err) {
+        throw new Error(`FS operation failed: ${sourcePath} does not exists.`);
+    }
+};
+
 const fileStreamService = {
     readFileContent,
+    makeDirectory,
 };
 export default fileStreamService;
