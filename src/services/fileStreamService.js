@@ -1,5 +1,6 @@
 import process from 'node:process';
 import fs from 'node:fs/promises';
+import fs_stream from 'node:fs';
 import path from 'node:path';
 
 const readFileContent = async (sourcePath) => {
@@ -65,10 +66,38 @@ const copyFile = async (filePath, newFilePath) => {
     }
 }
 
+const moveFile = async (filePath, newFilePath) => {
+    if (!filePath.startsWith('/')) {
+        filePath = path.join(process.cwd(), filePath);
+    }
+    if (!newFilePath.startsWith('/')) {
+        newFilePath = path.join(process.cwd(), newFilePath);
+    }
+
+    try {
+        await fs.access(filePath);
+        await fs.access(newFilePath);
+
+        newFilePath = path.join(newFilePath, path.basename(filePath));
+
+        const readStream = fs_stream.createReadStream(filePath, {encoding: 'utf-8'});
+        const writeStream = fs_stream.createWriteStream(newFilePath, {encoding: 'utf-8'});
+
+        readStream.pipe(writeStream);
+
+        await fs.rm(filePath);
+
+        return newFilePath;
+    } catch (err) {
+        throw new Error(`FS operation failed: ${filePath} or ${newFilePath} does not exists.`);
+    }
+}
+
 const fileStreamService = {
     readFileContent,
     makeDirectory,
     renameFile,
     copyFile,
+    moveFile,
 };
 export default fileStreamService;

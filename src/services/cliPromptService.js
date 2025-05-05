@@ -7,7 +7,7 @@ const baseWorkingPath = args[0];
 let currentPath = baseWorkingPath;
 process.chdir(currentPath);
 
-const commandNames = ['list', 'up', 'cd', 'ls', 'cat', 'mkdir', 'rn', 'cp'];
+const commandNames = ['list', 'up', 'cd', 'ls', 'cat', 'mkdir', 'rn', 'cp', 'mv'];
 
 const commandsDisplay = `
 Available commands:
@@ -21,6 +21,7 @@ Available commands:
   mkdir [new_directory_name]                Create new directory in current working directory
   rn [path_to_file] [new_filename]          Rename file
   cp path_to_file path_to_new_directory     Copy file
+  mv path_to_file path_to_new_directory     Move file
 `;
 let display = `
 Usage:
@@ -95,9 +96,20 @@ const resolveInput = async (chunk) => {
                     break;
                 }
 
-                const newFilePath = await fileStreamService.copyFile(args[1], args[2]);
+                const copiedFilePath = await fileStreamService.copyFile(args[1], args[2]);
 
-                result = `File ${args[1]} copied successfully to ${newFilePath}.`;
+                result = `File ${args[1]} copied successfully to ${copiedFilePath}.`;
+
+                break;
+            case 'mv':
+                if (!args[1] || !args[2]) {
+                    result = 'Please provide path to file and path to new file';
+                    break;
+                }
+
+                const movedFilePath = await fileStreamService.moveFile(args[1], args[2]);
+
+                result = `File ${args[1]} moved successfully to ${movedFilePath}.`;
 
                 break;
         }
