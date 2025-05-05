@@ -28,8 +28,24 @@ const makeDirectory = async (name) => {
     }
 };
 
+const renameFile = async (oldName, newName) => {
+    if (!oldName.startsWith('/')) {
+        oldName = path.join(process.cwd(), oldName);
+    }
+    newName = path.join(process.cwd(), newName);
+
+    try {
+        await fs.access(oldName);
+
+        await fs.rename(oldName, newName);
+    } catch (err) {
+        throw new Error(`FS operation failed: ${oldName} does not exists.`);
+    }
+}
+
 const fileStreamService = {
     readFileContent,
     makeDirectory,
+    renameFile,
 };
 export default fileStreamService;

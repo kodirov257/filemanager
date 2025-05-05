@@ -7,7 +7,7 @@ const baseWorkingPath = args[0];
 let currentPath = baseWorkingPath;
 process.chdir(currentPath);
 
-const commandNames = ['list', 'up', 'cd', 'ls', 'cat', 'mkdir'];
+const commandNames = ['list', 'up', 'cd', 'ls', 'cat', 'mkdir', 'rn'];
 
 const commandsDisplay = `
 Available commands:
@@ -19,6 +19,7 @@ Available commands:
  Basic operations with files
   cat [path_to_file]                    Read file and print it's content in console
   mkdir [new_directory_name]            Create new directory in current working directory
+  rn [path_to_file] [new_filename]      Rename file
 `;
 let display = `
 Usage:
@@ -76,6 +77,16 @@ const resolveInput = async (chunk) => {
 
                 const folderPath = await fileStreamService.makeDirectory(args[1]);
                 result = `Directory ${folderPath} created successfully.`;
+                break;
+            case 'rn':
+                if (!args[1] || !args[2]) {
+                    result = 'Please provide path to file and new filename';
+                    break;
+                }
+
+                await fileStreamService.renameFile(args[1], args[2]);
+
+                result = `File ${args[1]} renamed successfully to ${args[2]}.`;
                 break;
         }
     } catch (err) {
