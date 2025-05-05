@@ -17,9 +17,38 @@ const goDedicatedDirectory = async (currentDirectory, destination) => {
     return destination;
 };
 
+const printAllFilesAndFolders = async (currentDirectory) => {
+    try {
+        const items = await fs.readdir(currentDirectory);
+
+        const list = await Promise.all(items.map(async (file) => {
+            const fullPath = path.join(currentDirectory, file);
+            const stat = await fs.stat(fullPath);
+
+            return {
+                Name: file,
+                Type: stat.isDirectory() ? 'directory' : 'file',
+            };
+        }));
+
+        const sortedList = list.sort((a, b) => {
+            if (a.Type !== b.Type) {
+                return a.Type === 'directory' ? -1 : 1;
+            }
+
+            return a.Name.localeCompare(b.Name);
+        });
+
+        console.table(sortedList);
+    } catch (err) {
+        throw new Error(`FS operation failed: ${err}`);
+    }
+};
+
 const navigationService = {
     goUpperDirectory,
     goDedicatedDirectory,
+    printAllFilesAndFolders,
 };
 
 export default navigationService;

@@ -5,7 +5,7 @@ const args = process.argv.slice(2);
 const baseWorkingPath = args[0];
 let currentPath = baseWorkingPath;
 
-const commandNames = ['list', 'up', 'cd'];
+const commandNames = ['list', 'up', 'cd', 'ls'];
 
 const commandsDisplay = `
 Available commands:
@@ -13,6 +13,7 @@ Available commands:
  Navigation & working directory
   up                                    Go upper from current directory
   cd [path_to_directory]                Go to dedicated folder from current directory
+  ls                                    Print in console list of all files and folders in current directory
 `;
 let display = `
 Usage:
@@ -52,6 +53,9 @@ const resolveInput = async (chunk) => {
                 }
                 currentPath = await navigationService.goDedicatedDirectory(currentPath, destination);
                 result = `Current working directory is ${currentPath}\n`;
+                break;
+            case 'ls':
+                await navigationService.printAllFilesAndFolders(currentPath);
                 break;
         }
     } catch (err) {
