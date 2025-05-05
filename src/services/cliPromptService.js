@@ -1,11 +1,12 @@
 import navigationService from './navigationService.js';
+import fileStreamService from './fileStreamService.js';
 import process from 'node:process';
 
 const args = process.argv.slice(2);
 const baseWorkingPath = args[0];
 let currentPath = baseWorkingPath;
 
-const commandNames = ['list', 'up', 'cd', 'ls'];
+const commandNames = ['list', 'up', 'cd', 'ls', 'cat'];
 
 const commandsDisplay = `
 Available commands:
@@ -14,6 +15,8 @@ Available commands:
   up                                    Go upper from current directory
   cd [path_to_directory]                Go to dedicated folder from current directory
   ls                                    Print in console list of all files and folders in current directory
+ Basic operations with files
+  cat path_to_file                      Read file and print it's content in console
 `;
 let display = `
 Usage:
@@ -46,23 +49,28 @@ const resolveInput = async (chunk) => {
                 result = `Current working directory is ${currentPath}\n`;
                 break;
             case 'cd':
-                const destination = args[1];
-                if (!destination) {
+                if (!args[1]) {
                     result = 'Please provide path to directory';
                     break;
                 }
-                currentPath = await navigationService.goDedicatedDirectory(currentPath, destination);
+                currentPath = await navigationService.goDedicatedDirectory(currentPath, args[1]);
                 result = `Current working directory is ${currentPath}\n`;
                 break;
             case 'ls':
                 await navigationService.printAllFilesAndFolders(currentPath);
                 break;
+            case 'cat':
+                if (!args[1]) {
+                    result = 'Please provide path to directory';
+                    break;
+                }
+                result = await fileStreamService.readFileContent(args[1], currentPath);
         }
     } catch (err) {
         result = err.message;
     }
 
-    process.stdout.write(`${result}\n`);
+    process.stdout.write(`${result}\n\n`);
 };
 
 process.stdin.on('data', resolveInput);
