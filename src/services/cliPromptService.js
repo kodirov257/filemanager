@@ -70,7 +70,7 @@ const resolveInput = async (chunk) => {
                     result = 'Please provide path to file';
                     break;
                 }
-                result = await fileStreamService.readFileContent(args[1]);
+                await fileStreamService.readFileContent(args[1]);
                 break;
             case 'mkdir':
                 if (!args[1]) {

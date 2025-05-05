@@ -10,7 +10,11 @@ const readFileContent = async (sourcePath) => {
         try {
             await fs.access(sourcePath);
 
-            return await fs.readFile(sourcePath, {encoding: 'utf-8'});
+            const stream = fs_stream.createReadStream(sourcePath, {encoding: 'utf-8'});
+
+            stream.on('data', (chunk) => {
+                process.stdout.write(`${chunk}\n`);
+            });
         } catch (err) {
             throw new Error(`FS operation failed: ${sourcePath} does not exists.`);
         }
