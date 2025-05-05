@@ -1,7 +1,9 @@
+import process from 'node:process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-const readFileContent = async (sourcePath, currentPath) => {
+const readFileContent = async (sourcePath) => {
+    const currentPath = process.cwd();
     if (!sourcePath.startsWith('/')) {
         sourcePath = path.join(currentPath, sourcePath);
         try {

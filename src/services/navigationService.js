@@ -1,15 +1,24 @@
-import path from 'node:path';
+import process from 'node:process';
 import fs from 'node:fs/promises';
+import path from 'node:path';
 
-const goUpperDirectory = (currentDirectory) => path.dirname(currentDirectory);
+const goUpperDirectory = () => {
+    const currentDirectory = process.cwd();
+    const newDirectory = path.dirname(currentDirectory);
+    process.chdir(newDirectory);
 
-const goDedicatedDirectory = async (currentDirectory, destination) => {
+    return newDirectory;
+}
+
+const goDedicatedDirectory = async (destination) => {
+    const currentDirectory = process.cwd();
     if (!destination.startsWith('/')) {
         destination = path.join(currentDirectory, destination);
     }
 
     try {
         await fs.access(destination);
+        process.chdir(destination);
     } catch (err) {
         throw new Error(`FS operation failed: ${destination} does not exists.`);
     }
@@ -17,7 +26,8 @@ const goDedicatedDirectory = async (currentDirectory, destination) => {
     return destination;
 };
 
-const printAllFilesAndFolders = async (currentDirectory) => {
+const printAllFilesAndFolders = async () => {
+    const currentDirectory = process.cwd();
     try {
         const items = await fs.readdir(currentDirectory);
 

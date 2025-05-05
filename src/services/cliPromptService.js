@@ -5,6 +5,7 @@ import process from 'node:process';
 const args = process.argv.slice(2);
 const baseWorkingPath = args[0];
 let currentPath = baseWorkingPath;
+process.chdir(currentPath);
 
 const commandNames = ['list', 'up', 'cd', 'ls', 'cat'];
 
@@ -45,7 +46,7 @@ const resolveInput = async (chunk) => {
                 result = commandsDisplay;
                 break;
             case 'up':
-                currentPath = navigationService.goUpperDirectory(currentPath);
+                currentPath = navigationService.goUpperDirectory();
                 result = `Current working directory is ${currentPath}\n`;
                 break;
             case 'cd':
@@ -53,18 +54,18 @@ const resolveInput = async (chunk) => {
                     result = 'Please provide path to directory';
                     break;
                 }
-                currentPath = await navigationService.goDedicatedDirectory(currentPath, args[1]);
+                currentPath = await navigationService.goDedicatedDirectory(args[1]);
                 result = `Current working directory is ${currentPath}\n`;
                 break;
             case 'ls':
-                await navigationService.printAllFilesAndFolders(currentPath);
+                await navigationService.printAllFilesAndFolders();
                 break;
             case 'cat':
                 if (!args[1]) {
                     result = 'Please provide path to directory';
                     break;
                 }
-                result = await fileStreamService.readFileContent(args[1], currentPath);
+                result = await fileStreamService.readFileContent(args[1]);
         }
     } catch (err) {
         result = err.message;
