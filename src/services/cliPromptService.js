@@ -1,5 +1,6 @@
 import navigationService from './navigationService.js';
 import fileStreamService from './fileStreamService.js';
+import osService from './osService.js';
 import process from 'node:process';
 
 const args = process.argv.slice(2);
@@ -7,7 +8,7 @@ const baseWorkingPath = args[0];
 let currentPath = baseWorkingPath;
 process.chdir(currentPath);
 
-const commandNames = ['list', 'up', 'cd', 'ls', 'cat', 'mkdir', 'rn', 'cp', 'mv', 'rm'];
+const commandNames = ['list', 'up', 'cd', 'ls', 'cat', 'mkdir', 'rn', 'cp', 'mv', 'rm', 'os'];
 
 const commandsDisplay = `
 Available commands:
@@ -23,6 +24,12 @@ Available commands:
   cp path_to_file path_to_new_directory     Copy file
   mv path_to_file path_to_new_directory     Move file
   rm path_to_file                           Delete file
+ Operating system info
+  os --EOL                                  Print EOL (default system End-Of-Line)
+  os --cpus                                 Print host machine CPUs info
+  os --homedir                              Print home directory and print it to console
+  os --username                             Print current system user name
+  os --architecture                         Print CPU architecture for which Node.js binary has compiled
 `;
 let display = `
 Usage:
@@ -122,12 +129,17 @@ const resolveInput = async (chunk) => {
                 await fileStreamService.deleteFile(args[1]);
                 result = `Directory ${args[1]} deleted successfully.`;
                 break;
+            case 'os':
+                const argument = args[1].replace('--', '');
+
+                osService.printOS(argument);
+                break;
         }
     } catch (err) {
         result = err.message;
     }
 
-    process.stdout.write(`${result}\n\n`);
+    process.stdout.write(`${result}\n`);
 };
 
 process.stdin.on('data', resolveInput);
