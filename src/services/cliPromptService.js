@@ -95,7 +95,7 @@ const resolveInput = async (chunk) => {
                 }
 
                 const folderPath = await fileStreamService.makeDirectory(args[1]);
-                result = `Directory ${folderPath} created successfully.`;
+                result = `Directory ${folderPath} created successfully.\n`;
                 break;
             case 'rn':
                 if (!args[1] || !args[2]) {
@@ -105,7 +105,7 @@ const resolveInput = async (chunk) => {
 
                 await fileStreamService.renameFile(args[1], args[2]);
 
-                result = `File ${args[1]} renamed successfully to ${args[2]}.`;
+                result = `File ${args[1]} renamed successfully to ${args[2]}.\n`;
                 break;
             case 'cp':
                 if (!args[1] || !args[2]) {
@@ -115,7 +115,7 @@ const resolveInput = async (chunk) => {
 
                 const copiedFilePath = await fileStreamService.copyFile(args[1], args[2]);
 
-                result = `File ${args[1]} copied successfully to ${copiedFilePath}.`;
+                result = `File ${args[1]} copied successfully to ${copiedFilePath}.\n`;
 
                 break;
             case 'mv':
@@ -126,7 +126,7 @@ const resolveInput = async (chunk) => {
 
                 const movedFilePath = await fileStreamService.moveFile(args[1], args[2]);
 
-                result = `File ${args[1]} moved successfully to ${movedFilePath}.`;
+                result = `File ${args[1]} moved successfully to ${movedFilePath}.\n`;
 
                 break;
             case 'rm':
@@ -136,7 +136,7 @@ const resolveInput = async (chunk) => {
                 }
 
                 await fileStreamService.deleteFile(args[1]);
-                result = `Directory ${args[1]} deleted successfully.`;
+                result = `Directory ${args[1]} deleted successfully.\n`;
                 break;
             case 'os':
                 if (!args[1]) {
@@ -159,13 +159,13 @@ const resolveInput = async (chunk) => {
                 break;
             case 'compress':
                 if (!args[1] || !args[2]) {
-                    result = 'Please provide path to file and path to compressed file';
+                    result = 'Please provide path to file and path to compressed file\n';
                     break;
                 }
 
                 await compressorService.compress(args[1], args[2]);
 
-                result = `File ${args[1]} compressed successfully to ${args[2]}.`;
+                result = `File ${args[1]} compressed successfully to ${args[2]}.\n`;
 
                 break;
             case 'decompress':
@@ -176,7 +176,7 @@ const resolveInput = async (chunk) => {
 
                 await compressorService.decompress(args[1], args[2]);
 
-                result = `File ${args[1]} decompressed successfully to ${args[2]}.`;
+                result = `File ${args[1]} decompressed successfully to ${args[2]}.\n`;
 
                 break;
         }

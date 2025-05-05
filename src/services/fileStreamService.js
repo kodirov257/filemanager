@@ -65,7 +65,12 @@ const copyFile = async (filePath, newFilePath) => {
 
         newFilePath = path.join(newFilePath, path.basename(filePath));
 
-        await fs.cp(filePath, newFilePath, {errorOnExist: true, force: false});
+        const readStream = fs_stream.createReadStream(filePath, {encoding: 'utf-8'});
+        const writeStream = fs_stream.createWriteStream(newFilePath, {encoding: 'utf-8'});
+
+        readStream.pipe(writeStream);
+
+        // await fs.cp(filePath, newFilePath, {errorOnExist: true, force: false});
 
         return newFilePath;
     } catch (err) {
