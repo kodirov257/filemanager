@@ -5,13 +5,14 @@ const args = process.argv.slice(2);
 const baseWorkingPath = args[0];
 let currentPath = baseWorkingPath;
 
-const commandNames = ['list', 'up'];
+const commandNames = ['list', 'up', 'cd'];
 
 const commandsDisplay = `
 Available commands:
   list                                  Lists all commands$
  Navigation & working directory
   up                                    Go upper from current directory
+  cd [path_to_directory]                Go to dedicated folder from current directory
 `;
 let display = `
 Usage:
@@ -20,26 +21,41 @@ Usage:
 process.stdout.write(display);
 let result = '';
 
-const resolveInput = (chunk) => {
+const resolveInput = async (chunk) => {
     const chunkStringified = chunk.toString().trim();
     if (chunkStringified.includes('.exit')) {
         process.exit(0);
     }
-    
-    const commandName = chunkStringified.split(' ')[0];
+
+    const args = chunkStringified.split(' ');
+    const commandName = args[0];
     if (!commandNames.includes(commandName)) {
         console.log(`\nInvalid input`);
     }
 
     result = '';
-    switch (commandName) {
-        case 'list':
-            result = commandsDisplay;
-            break;
-        case 'up': 
-            currentPath = navigationService.goUpperDirectory(currentPath);
-            result = `Current working directory is ${currentPath}\n`;
-            break;
+
+    try {
+        switch (commandName) {
+            case 'list':
+                result = commandsDisplay;
+                break;
+            case 'up':
+                currentPath = navigationService.goUpperDirectory(currentPath);
+                result = `Current working directory is ${currentPath}\n`;
+                break;
+            case 'cd':
+                const destination = args[1];
+                if (!destination) {
+                    result = 'Please provide path to directory';
+                    break;
+                }
+                currentPath = await navigationService.goDedicatedDirectory(currentPath, destination);
+                result = `Current working directory is ${currentPath}\n`;
+                break;
+        }
+    } catch (err) {
+        result = err.message;
     }
 
     process.stdout.write(`${result}\n`);
