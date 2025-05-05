@@ -43,9 +43,32 @@ const renameFile = async (oldName, newName) => {
     }
 }
 
+const copyFile = async (filePath, newFilePath) => {
+    if (!filePath.startsWith('/')) {
+        filePath = path.join(process.cwd(), filePath);
+    }
+    if (!newFilePath.startsWith('/')) {
+        newFilePath = path.join(process.cwd(), newFilePath);
+    }
+
+    try {
+        await fs.access(filePath);
+        await fs.access(newFilePath);
+
+        newFilePath = path.join(newFilePath, path.basename(filePath));
+
+        await fs.cp(filePath, newFilePath, {errorOnExist: true, force: false});
+
+        return newFilePath;
+    } catch (err) {
+        throw new Error(`FS operation failed: ${filePath} or ${newFilePath} does not exists.`);
+    }
+}
+
 const fileStreamService = {
     readFileContent,
     makeDirectory,
     renameFile,
+    copyFile,
 };
 export default fileStreamService;
