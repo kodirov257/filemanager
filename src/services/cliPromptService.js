@@ -7,7 +7,7 @@ const baseWorkingPath = args[0];
 let currentPath = baseWorkingPath;
 process.chdir(currentPath);
 
-const commandNames = ['list', 'up', 'cd', 'ls', 'cat', 'mkdir', 'rn', 'cp', 'mv'];
+const commandNames = ['list', 'up', 'cd', 'ls', 'cat', 'mkdir', 'rn', 'cp', 'mv', 'rm'];
 
 const commandsDisplay = `
 Available commands:
@@ -22,6 +22,7 @@ Available commands:
   rn [path_to_file] [new_filename]          Rename file
   cp path_to_file path_to_new_directory     Copy file
   mv path_to_file path_to_new_directory     Move file
+  rm path_to_file                           Delete file
 `;
 let display = `
 Usage:
@@ -111,6 +112,15 @@ const resolveInput = async (chunk) => {
 
                 result = `File ${args[1]} moved successfully to ${movedFilePath}.`;
 
+                break;
+            case 'rm':
+                if (!args[1]) {
+                    result = 'Please provide name of directory';
+                    break;
+                }
+
+                await fileStreamService.deleteFile(args[1]);
+                result = `Directory ${args[1]} deleted successfully.`;
                 break;
         }
     } catch (err) {

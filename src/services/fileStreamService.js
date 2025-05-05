@@ -93,11 +93,25 @@ const moveFile = async (filePath, newFilePath) => {
     }
 }
 
+const deleteFile = async (filePath) => {
+    if (!filePath.startsWith('/')) {
+        filePath = path.join(process.cwd(), filePath);
+
+        try {
+            await fs.access(filePath);
+            await fs.rm(filePath);
+        } catch (err) {
+            throw new Error(`FS operation failed: ${filePath} does not exists.`);
+        }
+    }
+};
+
 const fileStreamService = {
     readFileContent,
     makeDirectory,
     renameFile,
     copyFile,
     moveFile,
+    deleteFile
 };
 export default fileStreamService;
