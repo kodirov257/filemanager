@@ -4,8 +4,8 @@ import fs_stream from 'node:fs';
 import path from 'node:path';
 
 const readFileContent = async (sourcePath) => {
-    const currentPath = process.cwd();
     if (!sourcePath.startsWith('/')) {
+        const currentPath = process.cwd();
         sourcePath = path.join(currentPath, sourcePath);
         try {
             await fs.access(sourcePath);
@@ -37,7 +37,10 @@ const renameFile = async (oldName, newName) => {
     if (!oldName.startsWith('/')) {
         oldName = path.join(process.cwd(), oldName);
     }
-    newName = path.join(process.cwd(), newName);
+
+    if (!newName.startsWith('/')) {
+        newName = path.join(process.cwd(), newName);
+    }
 
     try {
         await fs.access(oldName);
